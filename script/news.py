@@ -1,6 +1,9 @@
 from script.models.report import Report
 from config import config
 
+from selenium.webdriver.common.by import By
+from selenium import webdriver
+
 from time import sleep
 
 from api.report import report
@@ -12,6 +15,7 @@ class NewsScraper:
     last_report : Report
     temp_report : Report
 
+    driver = webdriver.Chrome()
 
     def get_last_report(self) -> Report:
         ...
