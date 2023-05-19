@@ -12,8 +12,8 @@ from api.error import error
 class NewsScraper:
     link = config.SITE
 
-    last_report : Report
-    temp_report : Report
+    last_report : Report = None
+    temp_report : Report = None
 
     def __init__(self) -> None:
         self.driver = webdriver.Chrome()
