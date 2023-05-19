@@ -10,7 +10,7 @@ from api.report import report
 from api.error import error
 
 class NewsScraper:
-    link = config.TARGET
+    link = config.SITE
 
     last_report : Report
     temp_report : Report
