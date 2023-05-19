@@ -15,7 +15,8 @@ class NewsScraper:
     last_report : Report
     temp_report : Report
 
-    driver = webdriver.Chrome()
+    def __init__(self) -> None:
+        self.driver = webdriver.Chrome()
 
     def get_last_report(self) -> Report:
         ...
