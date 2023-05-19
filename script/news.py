@@ -19,7 +19,11 @@ class NewsScraper:
         self.driver = webdriver.Chrome()
 
     def get_last_report(self) -> Report:
-        ...
+        self.driver.get(self.link)
+        report = self.driver.find_elements(by=By.CLASS_NAME, value="card-rY32JioV")[0]
+        link = report.get_attribute("href")
+        title = report.text
+        return Report(title, link)
 
     @property
     def is_new(self) -> bool:
