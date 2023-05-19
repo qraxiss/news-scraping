@@ -40,6 +40,11 @@ class NewsScraper:
                 self.temp_report = self.get_last_report()
             except Exception as e:
                 error(e)
+                try:
+                    self.driver.quit()
+                    self.driver = webdriver.Chrome()
+                except Exception as e:
+                    error(e)
             else:
                 if self.is_new:
                     report(self.last_report)
