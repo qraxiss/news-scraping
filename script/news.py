@@ -1,7 +1,7 @@
 from script.models.report import Report
 from config import config
 
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 from selenium import webdriver
 
 from time import sleep
@@ -15,22 +15,8 @@ class NewsScraper:
     last_report : Report = None
     temp_report : Report = None
 
-    chrome_options = Options()
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-
     def __init__(self) -> None:
-        self.path = None if config.CRHOME_DRIVER == "" else config.CRHOME_DRIVER
-        self.driver = self.new_driver()
-
-    def new_driver(self) -> webdriver.Chrome:
-        
-
-        return webdriver.Chrome(
-            self.path, 
-            chrome_options=self.chrome_options
-        )
+        self.driver = webdriver.Chrome()
 
     def get_last_report(self) -> Report:
         self.driver.get(self.link)

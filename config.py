@@ -6,7 +6,6 @@ class Settings(BaseSettings):
     API_BEARER : str
     API_URI : str
 
-    CRHOME_DRIVER : str
 
     class Config:
         env_file = '.env'
