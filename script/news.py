@@ -26,12 +26,14 @@ class NewsScraper:
         self.driver = self.new_driver()
 
     def new_driver(self) -> webdriver.Chrome:
-        
+        if self.path:
+            return webdriver.Chrome(
+                self.path, 
+                chrome_options=self.chrome_options
+            )
 
-        return webdriver.Chrome(
-            self.path, 
-            chrome_options=self.chrome_options
-        )
+        else:
+            return webdriver.Chrome()
 
     def get_last_report(self) -> Report:
         self.driver.get(self.link)
@@ -58,7 +60,7 @@ class NewsScraper:
                 error(e)
                 try:
                     self.driver.quit()
-                    self.driver = webdriver.Chrome()
+                    self.driver = self.new_driver()
                 except Exception as e:
                     error(e)
             else:
