@@ -1,6 +1,7 @@
 from script.models.report import Report
 from config import config
 
+from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 
