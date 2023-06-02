@@ -10,6 +10,8 @@ from time import sleep
 from api.telegram.report import report
 from api.telegram.error import error
 
+from helpers.error import retry
+
 
 class NewsScraper:
     link = config.SITE
@@ -50,17 +52,16 @@ class NewsScraper:
         else:
             return False
 
+    @retry
     def connect_news(self):
         while True:
             try:
                 self.temp_report = self.get_last_report()
             except Exception as e:
                 error(e)
-                try:
-                    self.driver.quit()
-                    self.driver = self.new_driver()
-                except Exception as e:
-                    error(e)
+                self.driver.quit()
+                self.driver = self.new_driver()
+
             else:
                 if self.is_new:
                     report(self.last_report)
