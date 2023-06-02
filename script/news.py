@@ -60,7 +60,7 @@ class NewsScraper:
         report = self.driver.find_elements(
             by=By.CLASS_NAME, value="card-rY32JioV")[0]
         link = report.get_attribute("href")
-        title = report.text
+        title = report.text.split('\n')[1]  # ilk satır haberi yayınyalan sayfa
         return Report(title, link)
 
     @property
