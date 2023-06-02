@@ -35,6 +35,9 @@ class NewsScraper:
         else:
             return webdriver.Chrome()
 
+    def get_last_content(self) -> str:
+        ...
+
     def get_last_report(self) -> Report:
         ...
 
