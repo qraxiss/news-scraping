@@ -3,7 +3,10 @@ from api.telegram.connection import interface
 
 
 def report_to_text(report: Report) -> str:
-    return f"◼{report.title}\n🔗{report.link}"
+    if report.content:
+        f"◼{report.title}\n\n📰{report.content}\n\n{report.link}"
+
+    return f"◼{report.title}\n\n🔗{report.link}"
 
 
 def report(report: Report):
