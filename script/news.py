@@ -46,7 +46,7 @@ class NewsScraper:
 
     @property
     def is_new(self) -> bool:
-        if self.last_report != self.temp_report:
+        if self.last_report.link != self.temp_report.link:
             self.last_report = self.temp_report
             return True
         else:
