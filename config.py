@@ -1,14 +1,18 @@
 from pydantic import BaseSettings
 
+
 class Settings(BaseSettings):
-    SITE : str
+    SITE: str
 
-    API_BEARER : str
-    API_URI : str
+    TELEGRAM_API_BEARER: str
+    TELEGRAM_API_URI: str
 
-    CRHOME_DRIVER : str
+    AI_ANALYSIS_API_URI: str
+
+    CRHOME_DRIVER: str
 
     class Config:
         env_file = '.env'
+
 
 config = Settings()
