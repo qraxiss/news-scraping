@@ -14,8 +14,8 @@ from api.telegram.error import error
 class NewsScraper:
     link = config.SITE
 
-    last_report: Report = None
-    temp_report: Report = None
+    last_report: Report = Report(None, None)
+    temp_report: Report = Report(None, None)
 
     chrome_options = Options()
     chrome_options.add_argument('--headless')
