@@ -7,14 +7,15 @@ from selenium import webdriver
 
 from time import sleep
 
-from api.report import report
-from api.error import error
+from api.telegram.report import report
+from api.telegram.error import error
+
 
 class NewsScraper:
     link = config.SITE
 
-    last_report : Report = None
-    temp_report : Report = None
+    last_report: Report = None
+    temp_report: Report = None
 
     chrome_options = Options()
     chrome_options.add_argument('--headless')
@@ -28,7 +29,7 @@ class NewsScraper:
     def new_driver(self) -> webdriver.Chrome:
         if self.path:
             return webdriver.Chrome(
-                self.path, 
+                self.path,
                 chrome_options=self.chrome_options
             )
 
@@ -52,7 +53,6 @@ class NewsScraper:
             return True
         else:
             return False
-        
 
     def connect_news(self):
         while True:
