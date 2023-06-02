@@ -10,7 +10,7 @@ from time import sleep
 from api.telegram.report import report
 from api.telegram.error import error
 
-from helpers.error import retry
+from helpers.error import restart_on_crash
 
 
 class NewsScraper:
@@ -56,7 +56,7 @@ class NewsScraper:
         else:
             return False
 
-    @retry
+    @restart_on_crash(forever=True)
     def connect_news(self):
         while True:
             try:

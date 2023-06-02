@@ -1,36 +1,21 @@
-from time import sleep
-
-from datetime import datetime as dt
-from traceback import format_exc
-from time import sleep
-
-import datetime as dt
-
-from api.telegram.error import error
+import traceback
+import time
 
 
-def exception_handler(func):
-    def inner_function(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except:
-            error(f'{format_exc()}')
-    return inner_function
-
-
-def retry(max_attempts: int = 0, forever: bool = True):
-    def inner(func):
+def restart_on_crash(forever=False, max_attempts=3, delay=0.1):
+    def decorator(func):
         def wrapper(*args, **kwargs):
-            attempt = 0
-            while forever or (attempt < max_attempts):
-                sleep(1)
-                attempt += 1
+            attempts = 0
+            while forever or attempts < max_attempts:
                 try:
                     return func(*args, **kwargs)
-                except:
-                    try:
-                        error(f'{format_exc()}')
-                    except Exception as e:
-                        print(e)
+                except Exception as e:
+                    print(f"An exception occurred: {e}")
+                    print("Restarting in {0} seconds...".format(delay))
+                    traceback.print_exc()
+                    attempts += 1
+                    time.sleep(delay)
+            raise Exception(
+                f"Function {func.__name__} crashed after {attempts} attempts.")
         return wrapper
-    return inner
+    return decorator
