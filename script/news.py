@@ -35,6 +35,9 @@ class NewsScraper:
         else:
             return webdriver.Chrome()
 
+    def get_last_content(self) -> str:
+        ...
+
     def get_last_report(self) -> Report:
         self.driver.get(self.link)
         report = self.driver.find_elements(by=By.CLASS_NAME, value="card-rY32JioV")[0]
