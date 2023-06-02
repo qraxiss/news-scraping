@@ -47,13 +47,13 @@ class NewsScraper:
             ).text
         )
 
-        return [
+        return "\n".join([
             p.text
             for p in soup
             .find("div", {"class": "body-KX2tCBZq"})
             .find("span")
             .find_all("p")
-        ]
+        ])
 
     def get_last_report(self) -> Report:
         self.driver.get(self.link)
