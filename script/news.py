@@ -64,5 +64,6 @@ class NewsScraper:
 
             else:
                 if self.is_new:
+                    self.last_report.content = self.get_last_content()
                     report(self.last_report)
             sleep(60)
