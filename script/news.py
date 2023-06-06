@@ -12,6 +12,7 @@ from time import sleep
 from api.telegram.report import report
 from api.telegram.error import error
 from api.wordpress.send_report import send_report
+from api.telegram.connection import send_message
 
 from helpers.error import restart_on_crash
 
@@ -87,6 +88,5 @@ class NewsScraper:
                     self.last_report.content = self.get_last_content()
                     report(self.last_report)
                     res = send_report(self.last_report)
-                    if res.status_code != 200:
-                        error(Exception(str(res.json()["error"])))
+                    send_message(str(res.json()))
             sleep(60)

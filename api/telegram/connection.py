@@ -30,3 +30,15 @@ interface = Requests(
         "Content-Type": "application/json"
     }
 )
+
+
+def send_message(text: str):
+    return interface.request(
+        ["send-message"],
+        **{
+            "method": "post",
+            "json": {
+                "text": text
+            }
+        }
+    )
