@@ -11,6 +11,8 @@ class Settings(BaseSettings):
 
     CRHOME_DRIVER: str
 
+    WORDPRESS_API_URI: str
+
     class Config:
         env_file = '.env'
 
