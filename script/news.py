@@ -105,6 +105,7 @@ class NewsScraper:
                 error(e)
                 self.driver.quit()
                 self.driver = self.new_driver()
+                self.login()
 
             else:
                 if self.is_new:
