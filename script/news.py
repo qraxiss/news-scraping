@@ -14,12 +14,14 @@ from api.telegram.connection import send_message
 
 from helpers.error import restart_on_crash
 
+import re
+
 
 class NewsScraper:
     link = config.SITE
 
-    last_report: Report = Report(None, None)
-    temp_report: Report = Report(None, None)
+    last_report: Report = {"link": None}
+    temp_report: Report = {"link": None}
 
     chrome_options = Options()
     chrome_options.add_argument('--headless')
@@ -40,22 +42,62 @@ class NewsScraper:
         else:
             return webdriver.Chrome()
 
+    def login(self):
+        self.driver.get("https://customer.armut.com/login")
+        # wait to load page
+        self.driver.implicitly_wait(10)
+
+        username = self.driver.find_element(
+            By.XPATH, "/html/body/app-root/cusapp-login-header/cusapp-login-page/form/div/input")
+        username.send_keys(config.ARMUT_USERNAME)
+
+        password = self.driver.find_element(
+            By.XPATH, "/html/body/app-root/cusapp-login-header/cusapp-login-page/form/div/div[2]/input")
+        password.send_keys(config.ARMUT_PASSWORD)
+
+        login_button = self.driver.find_element(
+            By.XPATH, "/html/body/app-root/cusapp-login-header/cusapp-login-page/form/div/button")
+        login_button.click()
+
+        self.driver.implicitly_wait(10)
+        sleep(3)
+
     def get_last_content(self) -> str:
-        ...
+        self.driver.get(self.last_report.link)
 
     def get_last_report(self) -> Report:
-        ...
+        self.driver.get(self.link)
+        self.driver.implicitly_wait(10)
+        sleep(10)
+
+        last_opportunity = self.driver.find_element(
+            by="xpath",
+            value="/html/body/app-root/app-container/proapp-dashboard/div/div[1]/div/proapp-opportunity-card[1]/div"
+        )
+
+        text = last_opportunity.text
+        last_opportunity.click()
+
+        return {
+            "owner": text.split('\n')[0],
+            "title": text.split('\n')[1].split('-')[0].strip(),
+            "location": re.search(r'-(.*?)-', text).group(1).strip(),
+            "count": text.split('\n')[-1].split('-')[-1].strip(),
+            "content": text.split('\n')[-2].split('-')[-1].strip(),
+            "link": self.driver.current_url
+        }
 
     @property
     def is_new(self) -> bool:
-        if self.last_report.link != self.temp_report.link:
+        if self.last_report["link"] != self.temp_report["link"]:
             self.last_report = self.temp_report
             return True
         else:
             return False
 
-    @restart_on_crash(forever=True)
+    @restart_on_crash(max_attempts=1)
     def connect_news(self):
+        self.login()
         while True:
             try:
                 self.temp_report = self.get_last_report()
@@ -66,8 +108,7 @@ class NewsScraper:
 
             else:
                 if self.is_new:
-                    self.last_report.content = self.get_last_content()
-                    report(self.last_report)
-                    res = send_report(self.last_report)
-                    send_message(str(res.json()))
-            sleep(60)
+                    send_message(str(self.last_report))
+
+            self.get_last_report()
+            sleep(5)
