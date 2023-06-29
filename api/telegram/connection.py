@@ -1,6 +1,7 @@
 from requests import request, Response
 from config import config
 
+
 class Requests:
     def __init__(self, **default_params: dict) -> None:
         self.default_params = default_params
@@ -17,16 +18,27 @@ class Requests:
         if 'json' not in params:
             params['json'] = {}
 
-
         params['url'] = params['url'] + "/".join(path)
 
         return request(**params)
-    
+
 
 interface = Requests(
-    url = config.API_URI,
-    headers = {
-        "Authorization": f"Bearer {config.API_BEARER}",
+    url=config.TELEGRAM_API_URI,
+    headers={
         "Content-Type": "application/json"
     }
 )
+
+
+def send_message(text: str):
+    return interface.request(
+        ["send-message"],
+        **{
+            "method": "post",
+            "json": {
+                "message": text,
+                "route": config.ROUTE
+            }
+        }
+    )

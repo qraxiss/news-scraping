@@ -7,14 +7,19 @@ from selenium import webdriver
 
 from time import sleep
 
-from api.report import report
-from api.error import error
+from api.telegram.report import report
+from api.telegram.error import error
+from api.wordpress.send_report import send_report
+from api.telegram.connection import send_message
+
+from helpers.error import restart_on_crash
+
 
 class NewsScraper:
     link = config.SITE
 
-    last_report : Report = None
-    temp_report : Report = None
+    last_report: Report = Report(None, None)
+    temp_report: Report = Report(None, None)
 
     chrome_options = Options()
     chrome_options.add_argument('--headless')
@@ -28,12 +33,15 @@ class NewsScraper:
     def new_driver(self) -> webdriver.Chrome:
         if self.path:
             return webdriver.Chrome(
-                self.path, 
+                self.path,
                 chrome_options=self.chrome_options
             )
 
         else:
             return webdriver.Chrome()
+
+    def get_last_content(self) -> str:
+        ...
 
     def get_last_report(self) -> Report:
         self.driver.get(self.link)
@@ -45,25 +53,26 @@ class NewsScraper:
 
     @property
     def is_new(self) -> bool:
-        if self.last_report != self.temp_report:
+        if self.last_report.link != self.temp_report.link:
             self.last_report = self.temp_report
             return True
         else:
             return False
-        
 
+    @restart_on_crash(forever=True)
     def connect_news(self):
         while True:
             try:
                 self.temp_report = self.get_last_report()
             except Exception as e:
                 error(e)
-                try:
-                    self.driver.quit()
-                    self.driver = self.new_driver()
-                except Exception as e:
-                    error(e)
+                self.driver.quit()
+                self.driver = self.new_driver()
+
             else:
                 if self.is_new:
+                    self.last_report.content = self.get_last_content()
                     report(self.last_report)
+                    res = send_report(self.last_report)
+                    send_message(str(res.json()))
             sleep(60)
