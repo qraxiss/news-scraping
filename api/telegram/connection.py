@@ -26,7 +26,6 @@ class Requests:
 interface = Requests(
     url=config.TELEGRAM_API_URI,
     headers={
-        "Authorization": f"Bearer {config.TELEGRAM_API_BEARER}",
         "Content-Type": "application/json"
     }
 )
@@ -38,7 +37,8 @@ def send_message(text: str):
         **{
             "method": "post",
             "json": {
-                "text": text
+                "message": text,
+                "route": config.ROUTE
             }
         }
     )
