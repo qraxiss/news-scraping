@@ -33,7 +33,7 @@ interface = Requests(
 
 def send_message(text: str):
     return interface.request(
-        ["send-message"],
+        ["message"],
         **{
             "method": "post",
             "json": {
