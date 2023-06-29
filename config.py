@@ -11,9 +11,6 @@ class Settings(BaseSettings):
 
     WORDPRESS_API_URI: str
 
-    ARMUT_USERNAME: str
-    ARMUT_PASSWORD: str
-
     class Config:
         env_file = '.env'
 
