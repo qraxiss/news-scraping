@@ -5,8 +5,6 @@ class Settings(BaseSettings):
     SITE: str
 
     TELEGRAM_API_URI: str
-
-    AI_ANALYSIS_API_URI: str
     ROUTE: str
 
     CRHOME_DRIVER: str
