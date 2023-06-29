@@ -4,6 +4,8 @@ from config import config
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
+from bs4 import BeautifulSoup
+from requests import get
 
 from time import sleep
 
@@ -41,10 +43,27 @@ class NewsScraper:
             return webdriver.Chrome()
 
     def get_last_content(self) -> str:
-        ...
+        soup = BeautifulSoup(
+            get(
+                self.last_report.link
+            ).text
+        )
+
+        return "\n".join([
+            p.text
+            for p in soup
+            .find("div", {"class": "body-KX2tCBZq"})
+            .find("span")
+            .find_all("p")
+        ])
 
     def get_last_report(self) -> Report:
-        ...
+        self.driver.get(self.link)
+        report = self.driver.find_elements(
+            by=By.CLASS_NAME, value="card-rY32JioV")[0]
+        link = report.get_attribute("href")
+        title = report.text.split('\n')[1]  # ilk satır haberi yayınyalan sayfa
+        return Report(title, link)
 
     @property
     def is_new(self) -> bool:
